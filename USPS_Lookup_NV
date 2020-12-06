@@ -17,7 +17,7 @@ from contextlib import redirect_stdout
 
 
 
-NV_read = pd.read_csv("/users/apple/18.csv", delimiter = ',')
+NV_read = pd.read_csv("/users/apple/NV_CC_voter_check.csv", delimiter = ',',usecols = ['RES_UNIT','RES_STREET_NUM','RES_DIRECTION','RES_STREET_NAME','RES_ADDRESS_TYPE','RES_CITY','RES_ZIP_CODE'])
 for row,column in NV_read.iterrows():
       streetu=column["RES_UNIT"]
       streetn=column["RES_STREET_NUM"]
@@ -26,34 +26,43 @@ for row,column in NV_read.iterrows():
       streett=column["RES_ADDRESS_TYPE"]
       cityz=column["RES_CITY"]
       zipcodez=column["RES_ZIP_CODE"]
-      ts=str(streetu)
-      units = str(ts.replace("APT", "Apartment")+", ")
-      if pd.isnull(streetd) and pd.isnull(streetu):
-          fulladdress=[str(streetn), str(streetnm), str(streett)]
-      elif pd.isnull(streetd):
-          fulladdress=[str(units),str(streetn), str(streetnm), str(streett)]
-      elif pd.isnull(streetu):
-          fulladdress=[str(streetn), str(streetd), str(streetnm), str(streett)]
+      trw=str(streetn)
+      streetnum=str(trw.replace(".0",""))
+      if pd.isnull(streetu):
+          units=str(" ")
       else:
-          fulladdress=[str(units),str(streetn),str(streetd),str(streetnm),str(streett)]
+         units=str(streetu)
+      if pd.isnull(streetd):
+          fulladdress=[str(streetnum), str(streetnm), str(streett)]
+      else:
+          fulladdress=[str(streetnum),str(streetd),str(streetnm),str(streett)]
       x=' '.join(fulladdress)
       firstline = str(x.replace("  ", " ")+".")
       citys=str(cityz)
       zipcodes=str(zipcodez)
       address = Address(
       name='Tobin Brown',
-      address_1=firstline,
+      address_1=units,
+      address_2=firstline,
       city=citys,
       state='NV',
       zipcode=zipcodes
      )
-      print(firstline)
       usps = USPSApi('857STUDE6453', test=True)
       validation = usps.validate_address(address)
       valids=str(validation.result)
+      print(firstline)
+      print(validation.result)
       checkerror = "Error"
       if checkerror in valids:
              with open('/users/apple/out.txt', 'a') as f:
                 with redirect_stdout(f):
                   print(firstline)
                   print(validation.result)
+      defaults = "Default"
+      if defaults in valids:
+             with open('/users/apple/out.txt', 'a') as f:
+                with redirect_stdout(f):
+                  print(firstline)
+                  print(validation.result)
+      
