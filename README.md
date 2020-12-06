@@ -2,4 +2,4 @@
 
 Various election integrity tools for USA Elections.
 
-USPS Lookup NV - lookup NV addresses on USPS, requires USPS API key
+USPS_Lookup_NV.py - lookup NV voter addresses on USPS, requires USPS API key
