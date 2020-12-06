@@ -3,7 +3,6 @@
 """
 Check Nevada Voter list against USPS delivery addresses.
 Note USPS returns false negatives and those need to go for secondary checks
-You will need a USPS API username to use this file
 """
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -16,31 +15,45 @@ import pandas as pd
 from usps import USPSApi, Address
 from contextlib import redirect_stdout
 
-article_read = pd.read_csv("input.csv", delimiter = ',')
+
+
+article_read = pd.read_csv("/users/apple/18.csv", delimiter = ',')
 for row,column in article_read.iterrows():
+      streetu=column["RES_UNIT"]
       streetn=column["RES_STREET_NUM"]
       streetd=column["RES_DIRECTION"]
       streetnm=column["RES_STREET_NAME"]
       streett=column["RES_ADDRESS_TYPE"]
       cityz=column["RES_CITY"]
       zipcodez=column["RES_ZIP_CODE"]
-      if pd.isnull(streetd):
+      ts=str(streetu)
+      units = str(ts.replace("APT", "Apartment")+", ")
+      if pd.isnull(streetd) and pd.isnull(streetu):
           fulladdress=[str(streetn), str(streetnm), str(streett)]
-          x=' '.join(fulladdress)
-          firstline = str(x.replace("  ", " ")+".")
-          citys=str(cityz)
-          zipcodes=str(zipcodez)
-          address = Address(
-          name='Tobin Brown',
-          address_1=firstline,
-          city=citys,
-          state='NV',
-          zipcode=zipcodes
+      elif pd.isnull(streetd):
+          fulladdress=[str(units),str(streetn), str(streetnm), str(streett)]
+      elif pd.isnull(streetu):
+          fulladdress=[str(streetn), str(streetd), str(streetnm), str(streett)]
+      else:
+          fulladdress=[str(units),str(streetn),str(streetd),str(streetnm),str(streett)]
+      x=' '.join(fulladdress)
+      firstline = str(x.replace("  ", " ")+".")
+      citys=str(cityz)
+      zipcodes=str(zipcodez)
+      address = Address(
+      name='Tobin Brown',
+      address_1=firstline,
+      city=citys,
+      state='NV',
+      zipcode=zipcodes
      )
- 
-          usps = USPSApi('XXXXXXXX', test=True)
-          validation = usps.validate_address(address)
-          with open('out.txt', 'a') as f:
-            with redirect_stdout(f):
-              print(firstline)
-              print(validation.result)
+      print(firstline)
+      usps = USPSApi('857STUDE6453', test=True)
+      validation = usps.validate_address(address)
+      valids=str(validation.result)
+      checkerror = "Error"
+      if checkerror in valids:
+             with open('/users/apple/out.txt', 'a') as f:
+                with redirect_stdout(f):
+                  print(firstline)
+                  print(validation.result)
