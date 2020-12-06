@@ -17,8 +17,8 @@ from contextlib import redirect_stdout
 
 
 
-article_read = pd.read_csv("/users/apple/18.csv", delimiter = ',')
-for row,column in article_read.iterrows():
+NV_read = pd.read_csv("/users/apple/18.csv", delimiter = ',')
+for row,column in NV_read.iterrows():
       streetu=column["RES_UNIT"]
       streetn=column["RES_STREET_NUM"]
       streetd=column["RES_DIRECTION"]
