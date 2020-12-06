@@ -32,10 +32,14 @@ for row,column in NV_read.iterrows():
           units=str(" ")
       else:
          units=str(streetu)
-      if pd.isnull(streetd):
-          fulladdress=[str(streetnum), str(streetnm), str(streett)]
+      if pd.isnull(streett):
+         stype=str(" ")
       else:
-          fulladdress=[str(streetnum),str(streetd),str(streetnm),str(streett)]
+         stype=str(streett)
+      if pd.isnull(streetd):
+          fulladdress=[str(streetnum), str(streetnm), str(stype)]
+      else:
+          fulladdress=[str(streetnum),str(streetd),str(streetnm),str(stype)]
       x=' '.join(fulladdress)
       firstline = str(x.replace("  ", " ")+".")
       citys=str(cityz)
@@ -54,15 +58,9 @@ for row,column in NV_read.iterrows():
       print(firstline)
       print(validation.result)
       checkerror = "Error"
-      if checkerror in valids:
-             with open('/users/apple/out.txt', 'a') as f:
-                with redirect_stdout(f):
-                  print(firstline)
-                  print(validation.result)
       defaults = "Default"
-      if defaults in valids:
+      if checkerror in valids or defaults in valids:
              with open('/users/apple/out.txt', 'a') as f:
                 with redirect_stdout(f):
                   print(firstline)
                   print(validation.result)
-      
