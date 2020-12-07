@@ -15,9 +15,7 @@ import pandas as pd
 from usps import USPSApi, Address
 from contextlib import redirect_stdout
 
-
-
-NV_read = pd.read_csv("/users/apple/NV_CC_voter_check.csv", delimiter = ',',usecols = ['RES_UNIT','RES_STREET_NUM','RES_DIRECTION','RES_STREET_NAME','RES_ADDRESS_TYPE','RES_CITY','RES_ZIP_CODE'])
+NV_read = pd.read_csv("in.csv", delimiter = ',',usecols = ['RES_UNIT','RES_STREET_NUM','RES_DIRECTION','RES_STREET_NAME','RES_ADDRESS_TYPE','RES_CITY','RES_ZIP_CODE'])
 for row,column in NV_read.iterrows():
       streetu=column["RES_UNIT"]
       streetn=column["RES_STREET_NUM"]
@@ -62,7 +60,7 @@ for row,column in NV_read.iterrows():
 #      defaults = "Default"
 #      if checkerror in valids or defaults in valids:
       if checkerror in valids:
-             with open('/users/apple/out.txt', 'a') as f:
+             with open('out.txt', 'a') as f:
                 with redirect_stdout(f):
                   print(firstline)
                   print(validation.result)
