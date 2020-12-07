@@ -15,7 +15,9 @@ import pandas as pd
 from usps import USPSApi, Address
 from contextlib import redirect_stdout
 
-NV_read = pd.read_csv("in.csv", delimiter = ',',usecols = ['RES_UNIT','RES_STREET_NUM','RES_DIRECTION','RES_STREET_NAME','RES_ADDRESS_TYPE','RES_CITY','RES_ZIP_CODE'])
+
+
+NV_read = pd.read_csv("/users/apple/NV_CC_voter_check.csv", delimiter = ',',usecols = ['RES_UNIT','RES_STREET_NUM','RES_DIRECTION','RES_STREET_NAME','RES_ADDRESS_TYPE','RES_CITY','RES_ZIP_CODE'])
 for row,column in NV_read.iterrows():
       streetu=column["RES_UNIT"]
       streetn=column["RES_STREET_NUM"]
@@ -50,15 +52,17 @@ for row,column in NV_read.iterrows():
       state='NV',
       zipcode=zipcodes
      )
-      usps = USPSApi('XXXXXXXXX', test=True)
+      usps = USPSApi('857STUDE6453', test=True)
       validation = usps.validate_address(address)
       valids=str(validation.result)
       print(firstline)
       print(validation.result)
       checkerror = "Error"
-      defaults = "Default"
-      if checkerror in valids or defaults in valids:
-             with open('out.txt', 'a') as f:
+#      Uncomment to report default addresses      
+#      defaults = "Default"
+#      if checkerror in valids or defaults in valids:
+      if checkerror in valids:
+             with open('/users/apple/out.txt', 'a') as f:
                 with redirect_stdout(f):
                   print(firstline)
                   print(validation.result)
