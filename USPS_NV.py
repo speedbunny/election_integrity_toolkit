@@ -50,7 +50,7 @@ for row,column in NV_read.iterrows():
       state='NV',
       zipcode=zipcodes
      )
-      usps = USPSApi('857STUDE6453', test=True)
+      usps = USPSApi('XX_YourUserName_XX', test=True)
       validation = usps.validate_address(address)
       valids=str(validation.result)
       print(firstline)
