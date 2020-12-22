@@ -11,3 +11,5 @@ games-howell.py - Pooling similar datasets with results from Games Howell postho
 cluster.r - Find clusters of voters who voted from same address
 
 poppyramid.r - Create population pyramid from voter data in R 
+
+histnorm.r - Plot histogram with normal distribution curve in R
