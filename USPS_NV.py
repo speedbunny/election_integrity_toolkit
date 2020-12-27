@@ -43,7 +43,7 @@ for row,column in NV_read.iterrows():
       citys=str(cityz)
       zipcodes=str(zipcodez)
       address = Address(
-      name='Alexander Johnson',
+      name='',
       address_1=units,
       address_2=firstline,
       city=citys,
