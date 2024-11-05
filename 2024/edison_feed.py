@@ -1,6 +1,3 @@
-import warnings
-warnings.filterwarnings('ignore')
-
 import pandas as pd
 import requests
 from requests.exceptions import RequestException
