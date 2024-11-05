@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings('ignore')
+
 import pandas as pd
 import requests
 from requests.exceptions import RequestException
@@ -38,37 +41,45 @@ for state in states:
 
 records = []
 for state, state_data in all_results.items():
-    if 'data' not in state_data or 'races' not in state_data['data'] or not state_data['data']['races']:
+    if 'races' not in state_data or not state_data['races']:
         continue
 
-    race = state_data['data']['races'][0]
-    for candidate in race['candidates']:
-        if candidate['party_id'] == 'republican':
-            candidate['party'] = 'rep'
-        elif candidate['party_id'] == 'democrat':
-            candidate['party'] = 'dem'
-        else:
-            candidate['party'] = 'trd'
+    race = state_data['races'][0]
+    reporting_units = race.get('reporting_units', [])
 
-    candidates = {candidate['candidate_key']: candidate for candidate in race['candidates']}
+    for unit in reporting_units:
+        for candidate in unit['candidates']:
+            if 'nyt_id' not in candidate:
+                continue
+            candidate_key = candidate['nyt_id']
+            if candidate_key.startswith('trump'):
+                candidate['party'] = 'rep'
+            elif candidate_key.startswith('harris'):
+                candidate['party'] = 'dem'
+            else:
+                candidate['party'] = 'trd'
 
-    for data_point in race['timeseries']:
-        data_point['state'] = state
-        data_point['expected_votes'] = race.get('tot_exp_vote', 0)
+        candidates = {candidate['nyt_id']: candidate for candidate in unit['candidates']}
 
-        percentage_votes = collapse_percent_per_party(data_point['vote_shares'], candidates)
+        record = {
+            'state': state,
+            'county': unit.get('name', 'statewide'),
+            'level': unit.get('level', 'state'),
+            'total_votes': unit.get('total_votes', 0),
+            'expected_votes': unit.get('total_expected_vote', 0)
+        }
 
-        for party in ['rep', 'dem', 'trd']:
-            data_point[f'vote_shares_{party}'] = percentage_votes.get(party, 0)
+        for candidate in unit['candidates']:
+            party = candidate.get('party', 'trd')
+            record[f'vote_shares_{party}'] = candidate['votes']['total']
 
-        data_point.pop('vote_shares', None)
-        records.append(data_point)
+        records.append(record)
 
 # Creating a DataFrame and saving to CSV
 time_series_df = pd.DataFrame.from_records(records)
 # Create a timestamp for the filename
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-output_path = f'Edison_{timestamp}.csv'
+output_path = f'/users/saraheaglesfield/Election Data Feed/Edison_{timestamp}.csv'
 time_series_df.to_csv(output_path, encoding='utf-8', index=False)
 
 print(f"Data successfully saved to {output_path}")
