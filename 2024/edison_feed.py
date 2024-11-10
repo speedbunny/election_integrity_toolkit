@@ -76,7 +76,7 @@ for state, state_data in all_results.items():
 time_series_df = pd.DataFrame.from_records(records)
 # Create a timestamp for the filename
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-output_path = f'/users/saraheaglesfield/Election Data Feed/Edison_{timestamp}.csv'
+output_path = f'Edison_{timestamp}.csv'
 time_series_df.to_csv(output_path, encoding='utf-8', index=False)
 
 print(f"Data successfully saved to {output_path}")
